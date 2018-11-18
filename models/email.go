@@ -1,5 +1,9 @@
 package models
 
+import (
+    "strings"
+)
+
 type Email struct {
     String  string  `json:"string"`
 
@@ -12,8 +16,14 @@ func (email *Email) LoadInfos () error {
         return nil
     }
 
-    email.Domain = Domain{}
-    email.Domain.LoadInfos()
+    domain := strings.Split(email.String, "@")[1]
+
+    email.Domain = Domain{ Name: domain }
+    err := email.Domain.LoadInfos()
+
+    if err != nil {
+        return err
+    }
 
     return nil
 }

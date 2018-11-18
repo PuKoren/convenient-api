@@ -13,7 +13,22 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
 
-    json.NewEncoder(w).Encode(models.User{})
+    user := models.User{}
+    json.NewDecoder(r.Body).Decode(&user)
+
+    if user.Ip == "" {
+        user.Ip = r.Header.Get("X-Forwarded-For")
+    }
+
+    err := user.LoadInfos()
+
+    if err != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        json.NewEncoder(w).Encode(err)
+        return
+    }
+
+    json.NewEncoder(w).Encode(user)
 }
 
 func RegisterHandlers(router *mux.Router) {
