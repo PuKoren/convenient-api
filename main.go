@@ -1,19 +1,19 @@
 package main
 
 import (
-    _ "encoding/json"
-    "net/http"
     "log"
+    "net/http"
 
     "github.com/gorilla/mux"
 
-    _ "github.com/PuKoren/convenient-api/routes/form"
+    "github.com/PuKoren/convenient-api/routes/form"
 )
 
 func main() {
+
     router := mux.NewRouter()
 
-
+    form.RegisterHandlers(router)
 
     log.Fatal(http.ListenAndServe(":8000", router))
 }
