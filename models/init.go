@@ -1,5 +1,6 @@
 package models
 
 func Init() {
-    UserInit()
+    InitUser()
+    InitEmail()
 }

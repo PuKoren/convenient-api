@@ -7,7 +7,7 @@ import (
 type Domain struct {
     Country string  `json:"country"`
     Name    string  `json:"name"`
-    Whois   string  `json:"whois"`
+    Whois   string  `json:"-"`
 }
 
 func (domain *Domain) LoadInfos() error {

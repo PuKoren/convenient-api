@@ -54,10 +54,14 @@ func (user *User) LoadInfos() error {
 }
 
 func (user *User) GetFirstnameFromEmail() string {
+    if user.Country != "" {
+
+    }
+
     return ""
 }
 
-func UserInit() error {
+func InitUser() error {
     firstnameDBs = make(map[string]dbs.FirstnameDB)
     firstnameDBs["FR"] = &dbs.FirstnameDB_FR{}
 
