@@ -14,7 +14,7 @@ Currently exposed as open API on [convenient.pukogames.com](http://convenient.pu
 [POST] /user/v1
 ```bash
 curl -X POST \
-  http://convenient.pukogames.com/user/v1 \
+  http://convenient.pukogames.com/v1/user/ \
   -H 'Content-Type: application/json' \
   -d '{ "firstname": "David" }'
 ``` 
