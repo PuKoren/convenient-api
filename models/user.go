@@ -39,7 +39,7 @@ func (user *User) LoadInfos() error {
             user.Firstname = user.GetFirstnameFromEmail()
         }
 
-        if user.Firstname != "" {
+        if user.Firstname != "" && firstnameDBs[user.Country] != nil {
             if  user.Birthyear == 0 {
                 user.Birthyear = firstnameDBs[user.Country].GetNameBirthyear(user.Firstname)
             }
