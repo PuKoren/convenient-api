@@ -1,4 +1,4 @@
-package form
+package routes
 
 import (
     "net/http"
@@ -31,7 +31,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(user)
 }
 
-func RegisterHandlers(router *mux.Router) {
+func RegisterHandlersUser(router *mux.Router) {
 
-    router.HandleFunc("/form/user/v1", GetUser).Methods("GET")
+    router.HandleFunc("/v1/user/", GetUser).Methods("POST")
 }
