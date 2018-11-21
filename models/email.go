@@ -1,6 +1,7 @@
 package models
 
 import (
+    "log"
     "strings"
 
     "github.com/PuKoren/convenient-api/dbs"
@@ -32,7 +33,7 @@ func (email *Email) LoadInfos () error {
     err := email.Domain.LoadInfos()
 
     if err != nil {
-        return err
+        log.Println(err)
     }
 
     return nil

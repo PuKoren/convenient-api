@@ -15,6 +15,7 @@ type User struct {
     Ip          string  `json:"ip"`
 
     Email       Email   `json:"email"`
+    Company     Company `json:"company"`
 }
 
 var (
@@ -24,7 +25,18 @@ var (
 
 func (user *User) LoadInfos() error {
 
-    user.Email.LoadInfos()
+    err := user.Email.LoadInfos()
+
+    if (err != nil) {
+        log.Println(err)
+    }
+
+    if (user.Email.Domain.Company.Country != "") {
+        user.Company = user.Email.Domain.Company
+        if (user.Country == "") {
+            user.Country = user.Company.Country
+        }
+    }
 
     if user.Country == "" && user.Ip != "" {
         var err error
