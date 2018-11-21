@@ -18,5 +18,9 @@ func main() {
 
     routes.RegisterHandlersUser(router)
 
-    log.Fatal(http.ListenAndServe(":8000", handlers.CORS()(router)))
+    allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+    allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+    allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+
+    log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(router)))
 }

@@ -33,5 +33,5 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func RegisterHandlersUser(router *mux.Router) {
 
-    router.HandleFunc("/v1/user/", GetUser).Methods("POST")
+    router.HandleFunc("/v1/user/", GetUser).Methods("POST", "OPTIONS")
 }
