@@ -4,6 +4,8 @@ import (
     "log"
     "strings"
 
+    "github.com/badoux/checkmail"
+
     "github.com/PuKoren/convenient-api/dbs"
 )
 
@@ -23,6 +25,13 @@ func (email *Email) LoadInfos () error {
         return nil
     }
 
+    err := checkmail.ValidateFormat(email.String)
+
+    if err != nil {
+        email.String = ""
+        return nil
+    }
+
     domain := strings.Split(email.String, "@")[1]
 
     if dbPublicDomains.IsPublicProvider(domain) {
@@ -30,7 +39,7 @@ func (email *Email) LoadInfos () error {
     }
 
     email.Domain = Domain{ Name: domain }
-    err := email.Domain.LoadInfos()
+    err = email.Domain.LoadInfos()
 
     if err != nil {
         log.Println(err)
