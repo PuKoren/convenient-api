@@ -47,17 +47,19 @@ func (user *User) LoadInfos() error {
     }
 
     if user.Country != "" {
-        if user.Firstname == "" && user.Email.String != "" {
-            user.Firstname = user.GetFirstnameFromEmail()
-        }
-
-        if user.Firstname != "" && firstnameDBs[user.Country] != nil {
-            if  user.Birthyear == 0 {
-                user.Birthyear = firstnameDBs[user.Country].GetNameBirthyear(user.Firstname)
+        if firstnameDBs[user.Country] != nil {
+            if user.Firstname == "" && user.Email.String != "" {
+                user.Firstname = user.GetFirstnameFromEmail()
             }
 
-            if user.Sex == "" {
-                user.Sex = firstnameDBs[user.Country].GetNameSex(user.Firstname)
+            if user.Firstname != "" {
+                if  user.Birthyear == 0 {
+                    user.Birthyear = firstnameDBs[user.Country].GetNameBirthyear(user.Firstname)
+                }
+
+                if user.Sex == "" {
+                    user.Sex = firstnameDBs[user.Country].GetNameSex(user.Firstname)
+                }
             }
         }
     }
@@ -66,11 +68,29 @@ func (user *User) LoadInfos() error {
 }
 
 func (user *User) GetFirstnameFromEmail() string {
-    if user.Country != "" {
+    var retainedName string
 
+    if user.Country != "" {
+        var probName []rune
+        probName = make([]rune, len(user.Firstname))
+
+        var retainedSize int = 0
+
+        for _, char := range user.Email.String {
+            if (char == '@') {
+                break
+            }
+            probName = append(probName, char)
+
+            yearAndSex := firstnameDBs[user.Country].GetName(string(probName))
+            if yearAndSex.Count > retainedSize {
+                retainedSize = yearAndSex.Count
+                retainedName = string(probName)
+            }
+        }
     }
 
-    return ""
+    return retainedName
 }
 
 func InitUser() error {

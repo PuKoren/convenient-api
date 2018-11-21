@@ -14,12 +14,13 @@ type FirstnameDB interface {
 
     GetNameBirthyear(name string) int
     GetNameSex(name string) string
+    GetName(name string) YearAndSex
 }
 
 type YearAndSex struct {
-    year int
-    sex string
-    count int
+    Year int
+    Sex string
+    Count int
 }
 
 type FirstnameDB_FR struct {
@@ -57,9 +58,9 @@ func (db *FirstnameDB_FR) Init() error {
             db.names[name] = &YearAndSex { year, sex, count }
         }
 
-        if db.names[name].count < count {
-            db.names[name].year = year
-            db.names[name].count = count
+        if db.names[name].Count < count {
+            db.names[name].Year = year
+            db.names[name].Count = count
         }
     }
 
@@ -75,7 +76,7 @@ func (db *FirstnameDB_FR) GetNameBirthyear(name string) int {
         return 0
     }
 
-    return yands.year
+    return yands.Year
 }
 
 func (db *FirstnameDB_FR) GetNameSex(name string) string {
@@ -85,15 +86,24 @@ func (db *FirstnameDB_FR) GetNameSex(name string) string {
         return ""
     }
 
-    if yands.sex == "1" {
+    if yands.Sex == "1" {
         return "M"
     }
 
-    if yands.sex == "2" {
+    if yands.Sex == "2" {
         return "F"
     }
 
     return ""
+}
+
+func (db *FirstnameDB_FR) GetName(name string) YearAndSex {
+    yands := db.names[strings.ToLower(name)]
+    if yands != nil {
+        return *yands
+    }
+
+    return YearAndSex {}
 }
 
 func (db *FirstnameDB_FR) Close() error {
