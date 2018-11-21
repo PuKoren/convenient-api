@@ -37,7 +37,7 @@ Several fields are accepted as data POST to enrich data further:
     "lastname": "string",
     "country": "2 char iso code",
     "birthyear": "integer",
-    "email": "spam@pukogames.com"
+    "email": { "string": "spam@pukogames.com" }
 }
 ```
 
