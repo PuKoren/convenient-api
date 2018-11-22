@@ -3,6 +3,8 @@ package dbs
 import (
     "os"
     "log"
+    "fmt"
+    "time"
     "bufio"
     "strings"
     "strconv"
@@ -30,7 +32,7 @@ type FirstnameDB_FR struct {
 func (db *FirstnameDB_FR) Init() error {
     db.names = make(map[string]*YearAndSex)
 
-    file, err := os.Open("dbs/data/nat2017.txt")
+    file, err := os.Open(fmt.Sprintf("%s/data/nat2017.txt", basepath))
     if err != nil {
         return err
     }
@@ -53,6 +55,13 @@ func (db *FirstnameDB_FR) Init() error {
         count, _ := strconv.Atoi(exp[3])
         sex := exp[0]
         name := strings.ToLower(exp[1])
+
+        // we don't want to consider any user 
+        // born in the last 10 years
+        now := time.Now()
+        if year + 10 > now.Year() {
+            continue
+        }
 
         if db.names[name] == nil {
             db.names[name] = &YearAndSex { year, sex, count }

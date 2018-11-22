@@ -3,6 +3,7 @@ package dbs
 import (
     "os"
     "log"
+    "fmt"
     "bufio"
     "strings"
 )
@@ -14,7 +15,7 @@ type PublicMailDB struct {
 func (db *PublicMailDB) Init() error {
     db.domains = make(map[string]*struct{})
 
-    file, err := os.Open("dbs/data/publicmails.txt")
+    file, err := os.Open(fmt.Sprintf("%s/data/publicmails.txt", basepath))
     if err != nil {
         return err
     }

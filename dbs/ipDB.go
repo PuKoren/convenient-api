@@ -3,6 +3,7 @@ package dbs
 import (
     "log"
     "net"
+    "fmt"
 
     "github.com/oschwald/geoip2-golang"
 )
@@ -14,7 +15,8 @@ type IpDB struct {
 func (db *IpDB) Init() error {
     if db.geoDb == nil {
         var err error
-        db.geoDb, err = geoip2.Open("dbs/data/GeoLite2-Country.mmdb")
+
+        db.geoDb, err = geoip2.Open(fmt.Sprintf("%s/data/GeoLite2-Country.mmdb", basepath))
 
         if err != nil {
             log.Println(err)
