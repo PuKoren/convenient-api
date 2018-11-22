@@ -30,7 +30,7 @@ type FirstnameDB_FR struct {
 func (db *FirstnameDB_FR) Init() error {
     db.names = make(map[string]*YearAndSex)
 
-    file, err := os.Open("dbs/nat2017.txt")
+    file, err := os.Open("dbs/data/nat2017.txt")
     if err != nil {
         return err
     }

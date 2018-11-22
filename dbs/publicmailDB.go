@@ -13,7 +13,7 @@ type PublicMailDB struct {
 func (db *PublicMailDB) Init() error {
     db.domains = make(map[string]*struct{})
 
-    file, err := os.Open("dbs/publicmails.txt")
+    file, err := os.Open("dbs/data/publicmails.txt")
     if err != nil {
         return err
     }

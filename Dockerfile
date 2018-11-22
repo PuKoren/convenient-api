@@ -4,8 +4,7 @@ RUN wget https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 
 
 WORKDIR $GOPATH/src/github.com/PuKoren/convenient-api
 
-COPY dbs/*.txt dbs/
-COPY dbs/*.mmdb dbs/
+COPY dbs/data dbs/data
 
 COPY Gopkg.toml Gopkg.lock ./
 RUN dep ensure --vendor-only
