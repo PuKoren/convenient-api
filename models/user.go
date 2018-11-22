@@ -111,3 +111,7 @@ func InitUser() error {
 
     return nil
 }
+
+func CloseUser() {
+    ipDB.Close()
+}

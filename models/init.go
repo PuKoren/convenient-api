@@ -4,3 +4,7 @@ func Init() {
     InitUser()
     InitEmail()
 }
+
+func Close() {
+    CloseUser()
+}

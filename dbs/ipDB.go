@@ -20,6 +20,8 @@ func (db *IpDB) Init() error {
             log.Println(err)
             return err
         }
+
+        log.Println("Geo DB Ready.")
     }
 
     return nil

@@ -2,6 +2,7 @@ package dbs
 
 import (
     "os"
+    "log"
     "bufio"
     "strings"
 )
@@ -26,7 +27,9 @@ func (db *PublicMailDB) Init() error {
         db.domains[scanner.Text()] = &struct{}{}
     }
 
-    return nil
+    log.Println("Public mails DB Loaded.")
+
+    return scanner.Err()
 }
 
 func (db *PublicMailDB) IsPublicProvider(domain string) bool {

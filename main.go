@@ -22,5 +22,7 @@ func main() {
     allowedOrigins := handlers.AllowedOrigins([]string{"*"})
     allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
-    log.Fatal(http.ListenAndServe(":8000", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(router)))
+    log.Println(http.ListenAndServe(":8000", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(router)))
+
+    models.Close()
 }
