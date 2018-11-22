@@ -69,6 +69,9 @@ func (user *User) LoadInfos() error {
         }
     }
 
+    user.Firstname = strings.Title(user.Firstname)
+    user.Lastname = strings.Title(user.Lastname)
+
     return nil
 }
 
