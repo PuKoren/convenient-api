@@ -48,6 +48,10 @@ func (email *Email) LoadInfos () error {
     return nil
 }
 
+func (email *Email) GetUserPart() string {
+    return strings.Split(email.String, "@")[0]
+}
+
 func InitEmail() error {
     dbPublicDomains = &dbs.PublicMailDB{}
     err := dbPublicDomains.Init()

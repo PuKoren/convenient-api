@@ -76,7 +76,7 @@ func (user *User) GetFirstnameFromEmail() string {
 
         var retainedSize int = 0
 
-        for _, char := range user.Email.String {
+        for _, char := range user.Email.GetUserPart() {
             if (char == '@') {
                 break
             }
