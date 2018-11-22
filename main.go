@@ -1,6 +1,7 @@
 package main
 
 import (
+    "os"
     "log"
     "net/http"
 
@@ -22,7 +23,12 @@ func main() {
     allowedOrigins := handlers.AllowedOrigins([]string{"*"})
     allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
-    log.Println(http.ListenAndServe(":8000", handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(router)))
+    httpHandler := handlers.LoggingHandler(os.Stdout, router)
+    httpHandler = handlers.ProxyHeaders(httpHandler)
+
+    log.Println(
+        http.ListenAndServe(":8000",
+            handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(httpHandler)))
 
     models.Close()
 }
