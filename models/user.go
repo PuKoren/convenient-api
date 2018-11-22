@@ -2,6 +2,7 @@ package models
 
 import (
     "log"
+    "strings"
 
     "github.com/PuKoren/convenient-api/dbs"
 )
@@ -46,20 +47,24 @@ func (user *User) LoadInfos() error {
         }
     }
 
-    if user.Country != "" {
-        if firstnameDBs[user.Country] != nil {
-            if user.Firstname == "" && user.Email.String != "" {
-                user.Firstname = user.GetFirstnameFromEmail()
+    if user.Email.String != "" {
+        userNames := user.GetFirstnameFromEmail()
+        if user.Firstname == "" {
+            user.Firstname = userNames.Firstname
+        }
+        if user.Lastname == "" {
+            user.Lastname = userNames.Lastname
+        }
+    }
+
+    if user.Country != "" && firstnameDBs[user.Country] != nil {
+        if user.Firstname != "" {
+            if  user.Birthyear == 0 {
+                user.Birthyear = firstnameDBs[user.Country].GetNameBirthyear(user.Firstname)
             }
 
-            if user.Firstname != "" {
-                if  user.Birthyear == 0 {
-                    user.Birthyear = firstnameDBs[user.Country].GetNameBirthyear(user.Firstname)
-                }
-
-                if user.Sex == "" {
-                    user.Sex = firstnameDBs[user.Country].GetNameSex(user.Firstname)
-                }
+            if user.Sex == "" {
+                user.Sex = firstnameDBs[user.Country].GetNameSex(user.Firstname)
             }
         }
     }
@@ -67,30 +72,56 @@ func (user *User) LoadInfos() error {
     return nil
 }
 
-func (user *User) GetFirstnameFromEmail() string {
+type UserNames struct {
+    Firstname   string
+    Lastname    string
+}
+
+func (user *User) GetFirstnameFromEmail() UserNames {
     var retainedName string
+    var retainedLastName string
 
     if user.Country != "" {
-        var probName []rune
-        probName = make([]rune, len(user.Firstname))
-
         var retainedSize int = 0
 
-        for _, char := range user.Email.GetUserPart() {
-            if (char == '@') {
-                break
-            }
-            probName = append(probName, char)
+        userPart := user.Email.GetUserPart()
+
+        probName := make([]rune, len(user.Firstname))
+        probNameR := make([]rune, len(user.Firstname))
+        for i, char := range userPart {
+            probName    = append(probName, char)
+            probNameR   = append([]rune{rune(userPart[len(userPart) -1 -i])}, probNameR...)
 
             yearAndSex := firstnameDBs[user.Country].GetName(string(probName))
+            yearAndSexR := firstnameDBs[user.Country].GetName(string(probNameR))
+
             if yearAndSex.Count > retainedSize {
                 retainedSize = yearAndSex.Count
                 retainedName = string(probName)
             }
+
+            if yearAndSexR.Count > retainedSize {
+                retainedSize = yearAndSex.Count
+                retainedName = string(probNameR)
+            }
+        }
+
+        splitedPart := strings.Split(userPart, ".")
+        if len(splitedPart) > 1 {
+            if splitedPart[0] == retainedName {
+                retainedLastName = splitedPart[1]
+            }
+            if splitedPart[1] == retainedName {
+                retainedLastName = splitedPart[0]
+            }
         }
     }
 
-    return retainedName
+    if len(retainedName) < 3 {
+        retainedName = ""
+    }
+
+    return UserNames{ Firstname: retainedName, Lastname: retainedLastName }
 }
 
 func InitUser() error {
