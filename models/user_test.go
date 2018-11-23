@@ -20,7 +20,6 @@ func TestUserModel_ExtractFirstNameFromEmail(t *testing.T) {
     assert.Equal(t, "jonathan", result, "Extracted firstname should be jonathan")
 }
 
-
 func TestUserModel_ExtractFirstNameFromEmailWithName(t *testing.T) {
     var user = User{
         Country: "FR",
@@ -29,6 +28,17 @@ func TestUserModel_ExtractFirstNameFromEmailWithName(t *testing.T) {
     result := user.GetFirstnameFromEmail().Firstname
 
     assert.Equal(t, "jonathan", result, "Extracted firstname should be jonathan")
+}
+
+func TestUserModel_ExtractLastNameFromEmailWithName(t *testing.T) {
+    var user = User{
+        Country: "FR",
+        Email: Email{ String: "jonathanmuller@toto.com" } }
+
+    result := user.GetFirstnameFromEmail()
+
+    assert.Equal(t, "jonathan", result.Firstname, "Extracted firstname should be jonathan")
+    assert.Equal(t, "muller", result.Lastname, "Extracted firstname should be jonathan")
 }
 
 func TestUserModel_ExtractFirstNameFromEmailWithNameReversed(t *testing.T) {
@@ -49,4 +59,25 @@ func TestUserModel_CannotExtractFirstNameFromShortEmailWithName(t *testing.T) {
     result := user.GetFirstnameFromEmail().Firstname
 
     assert.Equal(t, "", result, "Should fail to extract firstname")
+}
+
+func TestUserModel_ExtractLastNameFromEmailWhenFirstNameIsFound(t *testing.T) {
+    var user = User{
+        Country: "FR",
+        Email: Email{ String: "muller.jonathan@toto.com" } }
+
+    result := user.GetFirstnameFromEmail()
+
+    assert.Equal(t, "jonathan", result.Firstname, "Extracted firstname should be jonathan")
+    assert.Equal(t, "muller", result.Lastname, "Extracted lastname should be muller")
+
+    user = User{
+        Country: "FR",
+        Email: Email{ String: "jonathan.muller@toto.com" } }
+
+    result = user.GetFirstnameFromEmail()
+
+    assert.Equal(t, "jonathan", result.Firstname, "Extracted firstname should be jonathan")
+    assert.Equal(t, "muller", result.Lastname, "Extracted lastname should be muller")
+
 }

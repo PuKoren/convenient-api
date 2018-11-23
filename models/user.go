@@ -22,6 +22,7 @@ type User struct {
 var (
     ipDB *dbs.IpDB
     firstnameDBs map[string]dbs.FirstnameDB
+    lastnameDBs map[string]dbs.LastnameDB
 )
 
 func (user *User) LoadInfos() error {
@@ -117,6 +118,17 @@ func (user *User) GetFirstnameFromEmail() UserNames {
             if splitedPart[1] == retainedName {
                 retainedLastName = splitedPart[0]
             }
+
+            if !lastnameDBs[user.Country].Exists(retainedName) {
+                retainedLastName = ""
+            }
+        }
+
+        if retainedLastName == "" {
+            retainedLastName = strings.Replace(userPart, retainedName, "", -1)
+            if !lastnameDBs[user.Country].Exists(retainedName) {
+                retainedLastName = ""
+            }
         }
     }
 
@@ -129,12 +141,22 @@ func (user *User) GetFirstnameFromEmail() UserNames {
 
 func InitUser() error {
     firstnameDBs = make(map[string]dbs.FirstnameDB)
+    lastnameDBs = make(map[string]dbs.LastnameDB)
+
     firstnameDBs["FR"] = &dbs.FirstnameDB_FR{}
+    lastnameDBs["FR"] = &dbs.LastnameDB_FR{}
 
     ipDB = &dbs.IpDB{}
     ipDB.Init()
 
     for _, v := range firstnameDBs {
+        err := v.Init()
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
+
+    for _, v := range lastnameDBs {
         err := v.Init()
         if err != nil {
             log.Fatal(err)

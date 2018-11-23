@@ -3,4 +3,4 @@ language: go
 go:
   - "1.11"
 
-script: go build
+script: make test
