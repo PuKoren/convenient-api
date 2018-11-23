@@ -82,6 +82,10 @@ type UserNames struct {
 }
 
 func (user *User) GetFirstnameFromEmail() UserNames {
+    if firstnameDBs[user.Country] == nil {
+        return UserNames{}
+    }
+
     var retainedName string
     var retainedLastName string
 
@@ -110,24 +114,26 @@ func (user *User) GetFirstnameFromEmail() UserNames {
             }
         }
 
-        splitedPart := strings.Split(userPart, ".")
-        if len(splitedPart) > 1 {
-            if splitedPart[0] == retainedName {
-                retainedLastName = splitedPart[1]
-            }
-            if splitedPart[1] == retainedName {
-                retainedLastName = splitedPart[0]
+        if lastnameDBs[user.Country] != nil {
+            splitedPart := strings.Split(userPart, ".")
+            if len(splitedPart) > 1 {
+                if splitedPart[0] == retainedName {
+                    retainedLastName = splitedPart[1]
+                }
+                if splitedPart[1] == retainedName {
+                    retainedLastName = splitedPart[0]
+                }
+
+                if !lastnameDBs[user.Country].Exists(retainedName) {
+                    retainedLastName = ""
+                }
             }
 
-            if !lastnameDBs[user.Country].Exists(retainedName) {
-                retainedLastName = ""
-            }
-        }
-
-        if retainedLastName == "" {
-            retainedLastName = strings.Replace(userPart, retainedName, "", -1)
-            if !lastnameDBs[user.Country].Exists(retainedName) {
-                retainedLastName = ""
+            if retainedLastName == "" {
+                retainedLastName = strings.Replace(userPart, retainedName, "", -1)
+                if !lastnameDBs[user.Country].Exists(retainedName) {
+                    retainedLastName = ""
+                }
             }
         }
     }
