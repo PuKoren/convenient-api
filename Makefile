@@ -6,5 +6,8 @@ build:
 test:
 	go test -p 1 ./models
 
+deps:
+	dep ensure
+
 run:
 	./main
