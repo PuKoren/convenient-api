@@ -1,0 +1,8 @@
+vendor/
+.*
+main
+convenient-api
+Makefile
+README.md
+LICENSE
+Dockerfile
