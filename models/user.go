@@ -3,8 +3,6 @@ package models
 import (
     "log"
     "strings"
-
-    "github.com/PuKoren/convenient-api/dbs"
 )
 
 type User struct {
@@ -18,12 +16,6 @@ type User struct {
     Email       Email   `json:"email"`
     Company     Company `json:"company"`
 }
-
-var (
-    ipDB *dbs.IpDB
-    firstnameDBs map[string]dbs.FirstnameDB
-    lastnameDBs map[string]dbs.LastnameDB
-)
 
 func (user *User) LoadInfos() error {
 
@@ -124,56 +116,30 @@ func (user *User) GetFirstnameFromEmail() UserNames {
                     retainedLastName = splitedPart[0]
                 }
 
-                if !lastnameDBs[user.Country].Exists(retainedName) {
+                if !lastnameDBs[user.Country].Exists(retainedLastName) {
                     retainedLastName = ""
                 }
             }
 
             if retainedLastName == "" {
                 retainedLastName = strings.Replace(userPart, retainedName, "", -1)
-                if !lastnameDBs[user.Country].Exists(retainedName) {
+                if !lastnameDBs[user.Country].Exists(retainedLastName) {
                     retainedLastName = ""
                 }
+            }
+
+            if lastnameDBs[user.Country].GetCount(retainedLastName) < lastnameDBs[user.Country].GetCount(retainedName) {
+                log.Println("#### Swapping")
+                swap := retainedName
+                retainedName = retainedLastName
+                retainedLastName = swap
             }
         }
     }
 
-    if len(retainedName) < 3 {
+    if len(retainedName) < 2 {
         retainedName = ""
     }
 
     return UserNames{ Firstname: retainedName, Lastname: retainedLastName }
-}
-
-func InitUser() error {
-    firstnameDBs = make(map[string]dbs.FirstnameDB)
-    lastnameDBs = make(map[string]dbs.LastnameDB)
-
-    firstnameDBs["FR"] = &dbs.FirstnameDB_FR{}
-    lastnameDBs["FR"] = &dbs.LastnameDB_FR{}
-
-    ipDB = &dbs.IpDB{}
-    ipDB.Init()
-
-    for _, v := range firstnameDBs {
-        err := v.Init()
-        if err != nil {
-            log.Fatal(err)
-        }
-    }
-
-    for _, v := range lastnameDBs {
-        err := v.Init()
-        if err != nil {
-            log.Fatal(err)
-        }
-    }
-
-    log.Println("User model loaded.")
-
-    return nil
-}
-
-func CloseUser() {
-    ipDB.Close()
 }

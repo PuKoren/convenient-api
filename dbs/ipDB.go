@@ -42,6 +42,10 @@ func (db *IpDB) GetCountryIso(ip string) (string, error) {
 }
 
 func (db *IpDB) Close() error {
+    if db.geoDb == nil {
+        return nil
+    }
+
     defer db.geoDb.Close()
 
     return nil

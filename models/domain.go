@@ -1,6 +1,8 @@
 package models
 
 import (
+    "net"
+
     "github.com/domainr/whois"
     "github.com/likexian/whois-parser-go"
 )
@@ -41,6 +43,21 @@ func (domain *Domain) LoadInfos() error {
     r := parsedResponse.Registrant
     domain.Company = Company { Name: r.Name, Organization: r.Organization, Phone: r.Phone, Country: r.Country  }
     domain.Country = r.Country
+
+    if r.Country == "" {
+        ip, err := net.LookupIP("www." + domain.Name)
+        if err != nil {
+            return err
+        }
+
+        domain.Country, err = ipDB.GetCountryIso(ip[0].String())
+
+        if err != nil {
+            return err
+        }
+
+        domain.Company.Country = domain.Country
+    }
 
     return nil
 }

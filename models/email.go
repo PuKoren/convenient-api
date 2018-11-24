@@ -5,12 +5,6 @@ import (
     "strings"
 
     "github.com/badoux/checkmail"
-
-    "github.com/PuKoren/convenient-api/dbs"
-)
-
-var (
-    dbPublicDomains *dbs.PublicMailDB
 )
 
 type Email struct {
@@ -50,15 +44,4 @@ func (email *Email) LoadInfos () error {
 
 func (email *Email) GetUserPart() string {
     return strings.Split(email.String, "@")[0]
-}
-
-func InitEmail() error {
-    dbPublicDomains = &dbs.PublicMailDB{}
-    err := dbPublicDomains.Init()
-
-    if err != nil {
-        return err
-    }
-
-    return nil
 }

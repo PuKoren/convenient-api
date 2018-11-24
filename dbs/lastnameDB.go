@@ -6,6 +6,7 @@ import (
     "fmt"
     "bufio"
     "strings"
+    "strconv"
 )
 
 type LastnameDB interface {
@@ -13,14 +14,15 @@ type LastnameDB interface {
     Close() error
 
     Exists(name string) bool
+    GetCount(name string) int
 }
 
 type LastnameDB_FR struct {
-    names map[string]struct{}
+    names map[string]int
 }
 
 func (db *LastnameDB_FR) Init() error {
-    db.names = make(map[string]struct{})
+    db.names = make(map[string]int)
 
     file, err := os.Open(fmt.Sprintf("%s/data/noms2008nat_txt.txt", basepath))
     if err != nil {
@@ -42,7 +44,15 @@ func (db *LastnameDB_FR) Init() error {
         }
 
         name := exp[0]
-        db.names[strings.ToLower(name)] = struct {}{}
+
+        count := 0
+        for i := 1; i < 11; i++ {
+            if v, err := strconv.Atoi(exp[i]); err != nil {
+                count += v
+            }
+        }
+
+        db.names[strings.ToLower(name)] = count
     }
 
     log.Println("Lastname DB Loaded [FR].")
@@ -55,6 +65,14 @@ func (db *LastnameDB_FR) Exists(name string) bool {
         return true
     } else {
         return false
+    }
+}
+
+func (db *LastnameDB_FR) GetCount(name string) int {
+    if val, ok := db.names[strings.ToLower(name)]; ok {
+        return val
+    } else {
+        return 0
     }
 }
 
