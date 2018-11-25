@@ -3,6 +3,9 @@ language: go
 go:
   - "1.11"
 
-before_script: make deps
+before_install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - make deps
 
-script: make build
+script:
+  - make build
