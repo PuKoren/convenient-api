@@ -7,7 +7,7 @@ import (
 )
 
 func Test_Main(t *testing.T) {
-    InitUser()
+    Init()
 }
 
 func TestUserModel_ExtractFirstNameFromEmail(t *testing.T) {

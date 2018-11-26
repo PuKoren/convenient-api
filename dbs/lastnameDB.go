@@ -47,7 +47,7 @@ func (db *LastnameDB_FR) Init() error {
 
         count := 0
         for i := 1; i < 11; i++ {
-            if v, err := strconv.Atoi(exp[i]); err != nil {
+            if v, err := strconv.Atoi(exp[i]); err == nil {
                 count += v
             }
         }

@@ -128,8 +128,7 @@ func (user *User) GetFirstnameFromEmail() UserNames {
                 }
             }
 
-            if lastnameDBs[user.Country].GetCount(retainedLastName) < lastnameDBs[user.Country].GetCount(retainedName) {
-                log.Println("#### Swapping")
+            if userPart != retainedName && lastnameDBs[user.Country].GetCount(retainedLastName) < lastnameDBs[user.Country].GetCount(retainedName) {
                 swap := retainedName
                 retainedName = retainedLastName
                 retainedLastName = swap
